@@ -5,25 +5,19 @@ heka_hekad_log_file: /var/log/hekad.log
 heka_hekad_cache_dir: /var/cache/hekad
 heka_hekad_lua_dir: "{{ heka_hekad_dir }}/lua"
 
-heka_dashboard_output_port: 4352
-
 heka_hekad_pid_dir: /var/run/hekad.d
 heka_hekad_pid_file: main.pid
 
-heka_decoders:
-  - { type: monolog }
+heka_tasks:
+  - name: es_logstash_v0_encoder
+    type: ESLogstashV0Encoder
+    es_index_from_timestamp: true
+    type_name: '"%{Type}"'
 
-heka_inputs:
-  - udp_monolog_input:
-    type: monolog_udp
-    name: monolog_udp_main
-
-heka_outputs:
-  - dashboard_output:
-    type: dashboard
-    name: dashboard_main
-    port: "{{ heka_dashboard_output_port }}"
-
-  - elastic_search_output:
-    type: elastic_search
-    name: elastic_search_main
+  - name: elasticsearch_output
+    type: ElasticSearchOutput
+    message_matcher: "\"Logger != 'hekad'\""
+    flush_interval: 5000
+    flush_count: 10
+    encoder: '"ESLogstashV0Encoder"'
+    server: '"http://localhost:9200"'

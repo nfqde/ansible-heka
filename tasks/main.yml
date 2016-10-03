@@ -11,7 +11,7 @@
     dest={{ heka_temp_path }}/{{ heka_package_filename }}
     url={{ heka_mirror }}/v{{ heka_version }}/{{ heka_package_filename }}
 
-- shell: dpkg -s heka | grep 'install ok' || true
+- shell: dpkg -s heka | grep 'install ok'
   tags: heka
   register: heka_state
   ignore_errors: True
@@ -29,7 +29,7 @@
 - name: Install hekad service (debian)
   tags: heka
   template:
-    src=system/hekad_initd.j2
+    src=hekad_initd.j2
     dest=/etc/init.d/hekad
     owner=0
     group=0
@@ -48,14 +48,10 @@
   tags: heka
   file: dest={{ heka_hekad_lua_dir }} mode=0755 state=directory
 
-- name: Create dashboard directory
-  tags: heka
-  file: dest={{ heka_hekad_cache_dir }}/dashboard mode=0755 state=directory
-
 - name: Copy monolog.lua
   tags: heka
-  template:
-    src=plugin/monolog.lua
+  copy:
+    src=monolog.lua
     dest={{ heka_hekad_lua_dir }}/monolog.lua
     owner=0
     group=0
@@ -64,41 +60,15 @@
 - name: Install hekad configuration
   tags: heka
   template:
-    src=heka/main.toml.j2
-    dest={{ heka_hekad_dir }}/0_hekad_main.toml
+    src=heka.toml.j2
+    dest={{ heka_hekad_dir }}/0_hekad.toml
     owner=0
     group=0
     mode=0644
 
-- name: Install hekad decoders
+- name: Configure hakad
   tags: heka
-  with_items: heka_decoders
-  template:
-    src=decoder/{{ item.type }}.toml.j2
-    dest={{ heka_hekad_dir }}/1_{{ item.type }}.toml
-    owner=0
-    group=0
-    mode=0644
-
-- name: Enable Inputs
-  tags: heka
-  with_items: heka_inputs
-  template:
-    src=input/{{ item.type }}.toml.j2
-    dest={{ heka_hekad_dir }}/3_{{ item.name }}.toml
-    owner=0
-    group=0
-    mode=0644
-
-- name: Enable outputs
-  tags: heka
-  with_items: heka_outputs
-  template:
-    src=output/{{ item.type }}.toml.j2
-    dest={{ heka_hekad_dir }}/4_{{ item.name }}.toml
-    owner=0
-    group=0
-    mode=0644
+  template: src=custom.toml.j2 dest={{ heka_hekad_dir }}/10_custom.toml
 
 - name: Start hekad service
   tags: heka

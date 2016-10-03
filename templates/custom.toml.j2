@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+{% for section in heka_tasks %}
+[{{ section.name }}]
+{% for key, value in section.items() %}
+{% if key != 'name' %}
+{{ key }} = {{ value }}
+{% endif %}
+{% endfor %}
+
+{% endfor %}
