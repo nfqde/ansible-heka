@@ -1,12 +1,9 @@
 ---
 
-heka_ansible_temp_path: /tmp/ansible
-heka_temp_path: "{{ heka_ansible_temp_path }}/sources"
-
+heka_temp_dir: /tmp/heka
 heka_hekad_dir: /etc/hekad.d
 heka_hekad_lua_dir: "{{ heka_hekad_dir }}/lua"
-heka_hekad_log_file: /var/log/hekad.log
 heka_hekad_cache_dir: /var/cache/hekad
 
-heka_hekad_pid_dir: /var/run/hekad.d
-heka_hekad_pid_file: main.pid
+heka_hekad_log_file: /var/log/hekad.log
+heka_hekad_pid_file: /var/run/hekad.pid

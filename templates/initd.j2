@@ -12,7 +12,7 @@
 
 : ${ret:=0}
 PROC=/usr/bin/hekad
-PID_FILE="{{ heka_hekad_pid_dir}}/{{ heka_hekad_pid_file }}"
+PID_FILE="{{ heka_hekad_pid_file }}"
 
 get_pid() {
     cat "$PID_FILE"
@@ -20,14 +20,6 @@ get_pid() {
 
 is_running() {
     [ -f "$PID_FILE" ] && ps `get_pid` > /dev/null 2>&1
-}
-
-check_privsep_dir() {
-    # Create the PrivSep empty dir if necessary
-    if [ ! -d {{ heka_hekad_pid_dir}} ]; then
-        mkdir {{ heka_hekad_pid_dir}}
-        chmod 0755 {{ heka_hekad_pid_dir}}
-    fi
 }
 
 start(){
@@ -47,7 +39,6 @@ stop(){
 
 case "$1" in
   start)
-    check_privsep_dir
     start
   ;;
   stop)
