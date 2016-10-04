@@ -21,56 +21,38 @@
   command: dpkg -i {{ heka_temp_dir }}/{{ heka_package_filename }}
   when: heka_state|failed
 
-- name: Ensure daemon is present
-  tags: heka
-  apt: name=daemon state=present
-
-- name: Install hekad service (debian)
-  tags: heka
-  template:
-    src=initd.j2
-    dest=/etc/init.d/hekad
-    owner=0
-    group=0
-    mode=0755
-
-- name: Configure hekad at server startup
-  tags: heka
-  command: update-rc.d hekad defaults
-  when: heka_state|failed
-
-- name: Create directory
-  tags: heka
-  file: dest={{ heka_hekad_dir }} mode=0755 state=directory
-
 - name: Create Lua directory
   tags: heka
-  file: dest={{ heka_hekad_lua_dir }} mode=0755 state=directory
+  file: dest={{ heka_lua_dir }} mode=0755 state=directory
 
 - name: Copy monolog.lua
   tags: heka
   copy:
     src=monolog.lua
-    dest={{ heka_hekad_lua_dir }}/monolog.lua
+    dest={{ heka_lua_dir }}/monolog.lua
     owner=0
     group=0
     mode=0644
 
-- name: Install hekad configuration
+- name: Install heka configuration
   tags: heka
   template:
     src=main.toml.j2
-    dest={{ heka_hekad_dir }}/0_main.toml
+    dest={{ heka_conf_dir }}/00-hekad.toml
     owner=0
     group=0
     mode=0644
 
 - name: Configure hakad tasks
   tags: heka
-  template: src=tasks.toml.j2 dest={{ heka_hekad_dir }}/10_tasks.toml
+  template:
+    src=tasks.toml.j2
+    dest={{ heka_conf_dir }}/10-tasks.toml
+    owner=0
+    group=0
+    mode=0644
 
-- name: Start hekad service
+- name: Start heka service
   tags: heka
-  sudo: true
   changed_when: False
-  service: name=hekad state=restarted
+  service: name=heka state=restarted
