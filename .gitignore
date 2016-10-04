@@ -1,4 +1,2 @@
-/.twgit_features_subject
-/.twgit
-tests/.vagrant
-Gemfile.lock
+/tests/.vagrant
+/Gemfile.lock
