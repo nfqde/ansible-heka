@@ -1,10 +1,8 @@
 require 'spec_helper'
 
 %w{
-  /etc/hekad.d
-  /etc/hekad.d/lua
-  /var/run/hekad.d/
-  /var/cache/hekad/dashboard
+  /etc/heka
+  /etc/heka/lua
 }.each do |f|
   describe file(f) do
     it { should be_directory }
@@ -13,12 +11,9 @@ end
 
 %w{
   /var/log/hekad.log
-  /etc/hekad.d/0_hekad_main.toml
-  /etc/hekad.d/4_dashboard_main.toml
-  /etc/hekad.d/lua/monolog.lua
-  /etc/hekad.d/1_monolog.toml
-  /etc/hekad.d/3_monolog_udp_main.toml
-  /etc/hekad.d/4_elastic_search_main.toml
+  /etc/heka/conf.d/00-hekad.toml
+  /etc/heka/conf.d/10-tasks.toml
+  /etc/heka/lua/monolog.lua
 }.each do |f|
   describe file(f) do
     it { should be_file }
