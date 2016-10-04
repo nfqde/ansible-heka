@@ -1,12 +1,9 @@
 ---
 
-heka_hekad_dir: /etc/hekad.d
-heka_hekad_log_file: /var/log/hekad.log
-heka_hekad_cache_dir: /var/cache/hekad
-heka_hekad_lua_dir: "{{ heka_hekad_dir }}/lua"
-
-heka_hekad_pid_dir: /var/run/hekad.d
-heka_hekad_pid_file: main.pid
+heka_mirror: https://github.com/mozilla-services/heka/releases/download
+heka_version: 0.10.0
+heka_package_filename: heka_{{ heka_version }}_amd64.deb
+heka_package_sha256sum: 8dc72f5be664ef1659b6009c1b9ca3df
 
 heka_tasks:
   - name: es_logstash_v0_encoder
