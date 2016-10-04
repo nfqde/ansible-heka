@@ -1,4 +1,4 @@
-ansible-heka
+ansible-heka [![Build Status](https://travis-ci.org/nfqde/ansible-heka.svg?branch=master)](https://travis-ci.org/nfqde/ansible-heka)
 ============
 
 [Heka](http://hekad.readthedocs.io/) is a tool for collecting and collating data
