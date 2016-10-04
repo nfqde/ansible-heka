@@ -1,73 +1,46 @@
-Heka
-====
+ansible-heka
+============
 
-Heka is a tool for collecting and collating data from a number of different sources, performing "in-flight" processing of collected data, and delivering the results to any number of destinations for further analysis.
+[Heka](http://hekad.readthedocs.io/) is a tool for collecting and collating data
+from a number of different sources, performing "in-flight" processing of
+collected data, and delivering the results to any number of destinations for
+further analysis.
 
-This is an ansible project to configure Heka with Symfony2 applications.
+Supported Distributions
+-----------------------
 
-Requirements
+* Debian 7
+* Debian 8
+* Ubuntu 14.04
+* Ubuntu 16.04
+
+Sample Usage
 ------------
 
-None.
+```yaml
+---
 
-Role Variables
---------------
+hosts: logservers
+become: yes
+roles:
+  - name: heka
+    heka_tasks:
+      - name: LogstreamerInput
+        log_directory: '"/var/log"'
+        file_match: '\'auth\\.log\''
 
-List of default values
+      - name: PayloadEncoder
+        append_newlines: 'false'
 
-    ---
-    heka_hekad_dir: /etc/hekad.d
-    heka_hekad_log_file: /var/log/hekad.log
-    heka_hekad_cache_dir: /var/cache/hekad
-    heka_hekad_lua_dir: "{{ heka_hekad_dir }}/lua"
-
-    heka_dashboard_output_port: 4352
-
-    heka_hekad_pid_dir: /var/run/hekad.d
-    heka_hekad_pid_file: main.pid
-
-    heka_decoders:
-      - { type: monolog }
-
-    heka_inputs:
-      - udp_monolog_input:
-        type: monolog_udp
-        name: monolog_udp_main
-
-    heka_outputs:
-      - dashboard_output:
-        type: dashboard
-        name: dashboard_main
-        port: "{{ heka_dashboard_output_port }}"
-
-      - elastic_search_output:
-        type: elastic_search
-        name: elastic_search_main
-
-
-
-Dependencies
-------------
-
-None.
-
-Example Playbook
-----------------
-
-To try the role : ansible-galaxy install AbdoulNdiaye.heka
-
-    - hosts: servers
-      roles:
-         - { role: AbdoulNdiaye.heka }
-
-License
--------
-
-MIT
+      - name: LogOutput
+        message_matcher: '"TRUE"'
+        encoder: '"PayloadEncoder"'
+```
 
 Author Information
 ------------------
 
-Abdoul N'Diaye [@AbdoulNdiaye](https://twitter.com/AbdoulNDiaye)
+This project has been forked from [AbdoulNdiaye/ansible-role-heka](https://github.com/AbdoulNdiaye/ansible-role-heka)
+so credits go to [Abdoul N'Diaye](https://twitter.com/AbdoulNDiaye) as original author.
 
-Contact : <abdoul.nd@gmail.com>
+Further development has been done by NFQ.de team.
